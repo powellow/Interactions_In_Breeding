@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Owen Powell" />
+
+
+<title>Simulation Of non-Stationary Effects of Alleles Over Breeding Cycles</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Interactions_In_Breeding</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Simulation Of non-Stationary Effects of Alleles Over Breeding Cycles</h1>
+<h4 class="author">Owen Powell</h4>
+<h4 class="date">28/01/2021</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2021-02-03
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>Interactions_In_Breeding/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20210202code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20210202)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20210202code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20210202)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrong29fc01a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> 29fc01a </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrong29fc01a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version 29fc01a. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  data/ASE_Trait1.rds
+
+Unstaged changes:
+    Modified:   .Rprofile
+    Modified:   .gitattributes
+    Modified:   .gitignore
+    Modified:   Interactions_In_Breeding.Rproj
+    Modified:   README.md
+    Modified:   _workflowr.yml
+    Modified:   analysis/_site.yml
+    Modified:   analysis/about.Rmd
+    Modified:   analysis/index.Rmd
+    Modified:   analysis/license.Rmd
+    Modified:   code/README.md
+    Modified:   data/README.md
+    Modified:   output/README.md
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/NonStationaryEffects_Example.Rmd</code>) and HTML (<code>docs/NonStationaryEffects_Example.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+29fc01a
+</td>
+<td>
+powellow
+</td>
+<td>
+2021-02-03
+</td>
+<td>
+Publish the scripts, data &amp; files for the non-stationary effects of alleles
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="summary" class="section level2">
+<h2>Summary</h2>
+<p>The presence of genetic interactions can result in changes in allele substitution effects over breeding cycles. We refer to these changes in allele substitution effects as non-stationary effects of alleles. We provide a simple simulation to demonstrate the presence of non-stationry effects of alleles and their implications for using genomic predcition between component and endpoint traits in plant breeding.</p>
+<p>The simulation is broken down into 3 steps:</p>
+<ol style="list-style-type: decimal">
+<li>Simulate the initial Reference Population of Genotypes (RPG):
+<ul>
+<li>10 quantitative trait loci (QTL)</li>
+<li>Starting alle frequency of 0.2</li>
+<li>Approximately at Linkage Equilibrium (LE)</li>
+</ul></li>
+<li>Simulate causal loci (QTL) effects for 3 traits of interest &amp; visualise interactions between QTL:
+<ul>
+<li>3 correlated traits, determined by 10 pleiotropic QTL.</li>
+<li>Trait 1: additive QTL effects only.</li>
+<li>Trait 2: additive, dominance &amp; epistasis QTL effects.</li>
+<li>Trait 3: Sum of Trait 1 and Trait 2 phenotypes, i.e. no direct QTL effects.</li>
+</ul></li>
+<li>Breeding Simulation:
+<ul>
+<li>1000 individuals per generation.</li>
+<li>Select 100 individuals as parents on true genetic value of Trait 1.</li>
+<li>Random Crossing with 10 offspring per cross.</li>
+<li>Estimate allele substitution effects for the 10 QTL across all three traits.</li>
+<li>Estimate genetic mean and genetic variance for all three traits.</li>
+</ul></li>
+</ol>
+<p>The first two steps were only run once at the start of the simulation to establish the initial RPG and underlying genetic architecture of the traits. The third step, the Breeding Simulation, was replicated 5 times from the common RPG and genetic architectures.</p>
+<hr />
+</div>
+<div id="initial-reference-population-of-genotypes" class="section level2">
+<h2>Initial Reference Population of Genotypes</h2>
+<p>In this example, we will use AlphaSimR to simulate the initial Reference Population of Genotypes (RPG). However, the functions used in this workflow will work with any matrix of genotypes. So try with your favoured genetic simulation tool if you wish.</p>
+<div id="specify-simulation-parameters" class="section level3">
+<h3>Specify Simulation Parameters</h3>
+<p>To generate the RPG with AlphaSimR, we need to specify some parameters:</p>
+<pre class="r"><code>### Reference Population of Genotypes (RPG) &amp; Genome ----
+
+n_founders=1000 #Change this value to show effect of sampling on covariance/LD between QTL
+n_qtl=1
+n_chr=10
+start_allele_freq = 0.8
+n_traits = 3
+
+### QTL Effects ----
+add_qtl_effect_focal =
+add_qtl_effect_background =
+dom_qtl_effect_focal =
+dom_qtl_effect_background =
+epi_qtl_effect_focal =
+epi_qtl_effect_background =
+
+### Simulation Parameters ----
+n_reps = 5
+trait = 1
+n_cycles = 20
+nIndSel = 100
+nCrosses = 100
+nProgeny = 10
+selection = &quot;genotypic_values&quot;</code></pre>
+</div>
+<div id="simulate-genomes" class="section level3">
+<h3>Simulate Genomes</h3>
+<p>In this example, we will use AlphaSimR to simulate the initial Reference Population of Genotypes (RPG). However, the functions used in this workflow will work with any matrix of genotypes. So try with your favoured genetic simulation tool if you wish.</p>
+<p>To provide flexibility for more complicated epistatic interactions and trait relationships this simulation is done partially outside of AlphaSimR. AlphaSimR will be used to generate genotypes, track recombination, selection, crossing, etc. While, bespoke scripts will be used to specify qtl effects, qtl interactions and trait interactions, as well as calculating trait genetic values and phenotypes.</p>
+<p>To simulate our initial RPG, we use AlphaSimR to generate and store the simulation parameters. This creates ‘empty slots’ which can be filled with our genotypes and trait values gnerated outside of AlphaSimR with out bespoke scripts. The hapsim package is then used to sample the initial haplotyeps for 1000 individuals, with an allele frequency of 0.2 at all 10 qtl. The re-sampled haplotypes are then read back into AlphaSimR to form our initial RPG.</p>
+<pre class="r"><code>### Simulate Trait 1 ---
+
+# Simulate our Reference Population of Genotypes (RPG) ----
+founderPop = quickHaplo(nInd=n_founders, 
+                     nChr=n_chr, 
+                     segSites=n_qtl,
+                     inbred=FALSE)
+
+SP = SimParam$new(founderPop) #Store Simulation Parameters
+SP$addTraitA(n_qtl,mean=10,var=3)$setVarE(h2=1.0) #This step is required to allow us to extract the RPG genotypes (line 84) . We will not use this trait info in the simulation
+
+
+# Convert RPG into AlphaSimR Population ----
+source(&quot;./code/HapSim.R&quot;)
+founderPop = newMapPop(genMap = genMapRep,haplotypes)
+RPG = newPop(founderPop)
+
+# Extract QTL Genotypes of the RPG ----
+
+genos = pullQtlGeno(RPG) # Extract QTL genotypes
+genos &lt;- genos %&gt;% as_tibble() #get genotypes into tidyverse format</code></pre>
+<hr />
+</div>
+<div id="examine-genotype-structure-of-reference-population-of-genotypes" class="section level3">
+<h3>Examine Genotype Structure of Reference Population of Genotypes</h3>
+<p>In this example we have sampled the genotypes of the RPG with an expectation of Linkage Equilibrium (LE). However, departures from LE can be generated by sampling error. Sampling error can be influenced by:</p>
+<ul>
+<li>The size of the RPG.</li>
+<li>The co-location of QTL.</li>
+</ul>
+<p>Therefore, its important to visualise the covariance between the QTL genotypes in the simulated RPG.</p>
+<pre class="r"><code>### Estimate covariance between QTL in RPG ----
+covar_genos &lt;- cov(genos) %&gt;% as.tibble() 
+
+### Reformat Dataframe for Plotting
+heatmap &lt;- covar_genos %&gt;% gather(Primary_QTL,CoVariance) %&gt;% 
+  mutate(Primary_QTL = factor(Primary_QTL,levels=paste(&quot;QTL&quot;,c(1:(n_qtl*n_chr)),sep=&quot;_&quot;)), 
+         Secondary_QTL = rep(unique(Primary_QTL),times=length(unique(Primary_QTL)))) %&gt;% 
+  relocate(Primary_QTL,Secondary_QTL,CoVariance) %&gt;% 
+  mutate(Norm_CoVariance = (CoVariance - min(CoVariance))/(max(CoVariance)-min(CoVariance))) #formatted dataframe to plot heatmaps
+
+### Plot Heatmap ----
+
+heatmap %&gt;%
+  ggplot(aes(y=Primary_QTL,x = Secondary_QTL, fill=CoVariance)) +
+  geom_tile() +
+  geom_text(aes(label = round(CoVariance, 2))) +
+  scale_fill_distiller(palette = &quot;RdBu&quot;,direction = 1,limits=c(-1,1)) +
+  theme_pubclean() +  
+  theme(legend.position = &quot;right&quot;,plot.title = element_text(hjust = 0.5)) +
+  ggtitle(&quot;Co/Variance Matrix of QTL Genotypes in Initial RPG&quot;)  </code></pre>
+<p><img src="figure/NonStationaryEffects_Example.Rmd/Visualise%20Covariance%20between%20QTL%20in%20RPG-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>The heatmap above, shows zero and small non-zero values in the off-diagonal elements. Therefore, there is minimal covariance between the simulated QTL. The minimal covariance between the QTL shows us that our reference population of genotypes is at approximate Linkage Equilibrium.</p>
+<hr />
+</div>
+</div>
+<div id="genetic-architecure-of-the-traits" class="section level2">
+<h2>Genetic Architecure of the Traits</h2>
+<p>We estimated the genetic effects of the 10, pleiotropic QTL following a combination of the “Gene’s Eye View” approach from <a href="https://onlinelibrary.wiley.com/doi/full/10.1046/j.1420-9101.2002.00413.x">Wade 2002</a> and <a href="https://www.genetics.org/content/139/3/1455">Cheverud &amp; Routman 1995</a>. The “Gene’s Eye View” approach looks at changes in phenotype of the three genotype classes (ie AA, Aa, aa) of a single QTL as a function of changes in the genetic background, i.e the allele frequencies at all other QTL. In our example QTL 1 was chosen as our ‘Focal’ QTL. QTL 2 to 10 were considered ‘Background’ QTL. ‘Background’ QTL were assigned the same genetic effects and can be viewed as replicates of the same QTL. Phenotypes for the three traits were taken from a previous simulation, <a href="http://dx.doi.org/10.1093/insilicoplants/diaa016">Cooper et al. 2020</a>. All QTL were pleitropic to honestly simulate the underlying genetics of the multitrait network, although the QTL had different magnitudes of effects across the three traits. The parameterisation of QTL effects resulted in:</p>
+<ul>
+<li>3 correlated traits, determined by 10 pleiotropic QTL.
+<ul>
+<li>Trait 1: additive QTL effects only.</li>
+<li>Trait 2: additive, dominance &amp; epistasis QTL effects.</li>
+<li>Trait 3: Sum of Trait 1 and Trait 2 phenotypes, i.e. no direct QTL effects.</li>
+</ul></li>
+</ul>
+<p>See how the additive and dominance genetic effects for the ‘Focal’ and ‘Background’ QTL were simulated below:</p>
+<pre class="r"><code># Resample QTL Effects outside AlphaSimR ----
+
+# Additive ---- 
+
+# Trait 1
+qtl_effects_Trait1 = c(0.5,rep((10/(n_qtl*n_chr-1)),times=((n_qtl*n_chr)-1)));
+qtl_effects_Trait1 = as.matrix(qtl_effects_Trait1) # Simulate additive QTL effects
+
+# Trait 2
+qtl_effects_Trait2 = c(-0.167,rep((-2/((n_qtl*n_chr)-1)),times=((n_qtl*n_chr)-1)));
+qtl_effects_Trait2 = as.matrix(qtl_effects_Trait2) # Simulate additive QTL effects
+
+# Dominance ---- 
+
+# Trait 1
+dom_qtl_effects_Trait1 = rep(0,times=(n_qtl*n_chr));dom_qtl_effects_Trait2 = as.matrix(dom_qtl_effects_Trait1) # Simulate Dominance QTL effects
+
+# Trait 2
+dom_qtl_effects_Trait2 = c(0,rep((20.5/((n_qtl*n_chr)-1)),times=((n_qtl*n_chr)-1)));
+dom_qtl_effects_Trait2 = as.matrix(dom_qtl_effects_Trait2) # Simulate Dominance QTL effects</code></pre>
+<p>Simulation of epistasis, i.e. between QTL interactions, is a little more tricky. The interaction matrix is supplied as the input into the <strong>per_locus_interaction()</strong> function which calculates the interaction deviation for each of the 9 two locus genotye classes. However, we want to encode a specifc network using previously estimated effects. Therefore we will manually create the 3x3 interaction deviation matrices for each QTL-QTL interaction. The 3x3 QTL interaction matrices can specified directly in R, or specified in Excel and loaded in.</p>
+<pre class="r"><code># Epistasis ----
+
+# A non-zero value in a cell of the matrix represents the presence of an interaction **AND** the mean of the distribution from which interaction deviations are sampled.
+
+# interaction matrix from Excel ----
+# interaction_matrix &lt;- read.table(file=&quot;Interaction_Matrix_Quadratic.csv&quot;,sep=&quot;,&quot;,header=T,row.names=1,check.names = T)
+
+### Interaction matrices in R ----
+
+#Specify Presence/Absence of Genetic Interactions 
+# Trait 1
+
+interaction_matrix_trait1 &lt;- matrix(0,(n_qtl*n_chr),(n_qtl*n_chr));
+interaction_matrix_trait1 &lt;- interaction_matrix_trait1 %&gt;% as.tibble()
+names(interaction_matrix_trait1) &lt;- paste(&quot;QTL&quot;,c(1:(n_qtl*n_chr)),sep=&quot;_&quot;)
+row.names(interaction_matrix_trait1) &lt;- paste(&quot;QTL&quot;,c(1:(n_qtl*n_chr)),sep=&quot;_&quot;)
+
+# Trait 2
+interaction_matrix_trait2 &lt;- matrix(0,(n_qtl*n_chr),(n_qtl*n_chr)); interaction_matrix_trait2[1,c(2:(n_qtl*n_chr))] &lt;- 1
+interaction_matrix_trait2 &lt;- interaction_matrix_trait2 %&gt;% as.tibble()
+names(interaction_matrix_trait2) &lt;- paste(&quot;QTL&quot;,c(1:(n_qtl*n_chr)),sep=&quot;_&quot;)
+row.names(interaction_matrix_trait2) &lt;- paste(&quot;QTL&quot;,c(1:(n_qtl*n_chr)),sep=&quot;_&quot;)
+
+### Identify &amp; Summarise QTL interactions for Trait 2
+
+#Identify Genetic Interactions
+n_interactions = length(which(interaction_matrix_trait2!=0))
+# Specify Magnitude of Genetic Interactions 
+interaction_trait2 &lt;- matrix(data = c(-0.204,-0.037,0.241,0,0,0,0.204,0.037,-0.241),nrow=3,ncol=3,byrow=T) 
+# Summarise Genetic Interactions
+per_locus_interaction_trait2 &lt;- lapply(seq_len(n_interactions), function(X) interaction_trait2)
+interactions_trait2 &lt;- summarise_interactions(interaction_matrix_trait2,per_locus_interaction_trait2) # if this throws up an error check for dplyr/plyr incompatibility</code></pre>
+<div id="visualise-the-interactions" class="section level3">
+<h3>Visualise the Interactions</h3>
+<p>When the number of QTL and interactions is small, a correlation plot or matrix is an easy way to visualise the presence and magnitude of interactions. The QTL the top of the plot are providing the epistatic effect, while the QTL along the diagonal are receiving the epistatic effect. In this case, QTL 2 to 10 all have an epistatic effect on the value of QTL 1.</p>
+<div id="trait-1" class="section level4">
+<h4>Trait 1</h4>
+<pre class="r"><code>#Visualise QTL Interactions as Correlation Plots for Trait 1 &amp; Trait 2 ----
+
+qtl_incidence_matrix_trait1 &lt;- corrplot(as.matrix(interaction_matrix_trait1),method=&quot;circle&quot;,type=&quot;upper&quot;) #no interactions specified - so plot should be empty</code></pre>
+<p><img src="figure/NonStationaryEffects_Example.Rmd/Visualise%20QTL%20Network%20-%20Trait%201-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="trait-2" class="section level4">
+<h4>Trait 2</h4>
+<pre class="r"><code>qtl_incidence_matrix_trait2 &lt;- corrplot(as.matrix(interaction_matrix_trait2),method=&quot;circle&quot;,type=&quot;upper&quot;)</code></pre>
+<p><img src="figure/NonStationaryEffects_Example.Rmd/Visualise%20QTL%20Network%20-%20Trait%202-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>However, matrices becomes problematic when visualsing a large number of QTL and interactions. large numbers of QTL interactions can be visualised as networks for easier interpretation. QTL are represented by the ‘nodes’, and the interactions are represented by the ‘edges’.</p>
+<ul>
+<li>The colour of the ‘edge’ indicates the sign of mean interaction deviation.</li>
+<li>The size of the ‘edge’ indicates the magnitude of interaction genetic variance of the interaction.</li>
+</ul>
+<pre class="r"><code>#create QTL nodes
+nodes_trait2 &lt;- cbind(qtl = seq(1,(n_qtl*n_chr)),additive_effect_size = qtl_effects_Trait2, trait = rep(&quot;Trait2&quot;,n_qtl*n_chr)) %&gt;% as.tibble() %&gt;% rename(additive_effect_size = V2)
+
+#create epistatic edges
+graph_trait2 &lt;- interactions_trait2 %&gt;% unnest() %&gt;% tbl_graph(nodes = nodes_trait2, edges =. , directed = TRUE)
+graph_trait2 %&gt;%
+  activate(edges)
+
+#create network plot
+qtl_network_trait2 &lt;- ggraph(graph_trait2,layout = &quot;circle&quot;) +
+  geom_edge_link(aes(width=interaction_variance,alpha=0.2,colour=average_interaction_sign)) +
+  scale_edge_width(range = c(0.1, 2)) +
+  geom_node_point(aes(size=additive_effect_size,label=qtl)) +
+  geom_node_label(aes(label=qtl)) +
+  theme_graph() + theme(legend.position = &quot;none&quot;) 
+qtl_network_trait2</code></pre>
+<p><img src="figure/NonStationaryEffects_Example.Rmd/Visualise%20QTL%20Interactions%20as%20a%20Networks%20for%20Trait%202-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>We now need to store the genetic architectures of the different traits into a dataframe that can be accessed and added to throught the simulation.</p>
+<pre class="r"><code># Create Genetic Architecture Object ----
+
+library(naniar)
+
+genetic_architecture &lt;- gen_architecture(1,additive_effects=qtl_effects_Trait1,append=F) # Trait 1
+genetic_architecture &lt;- gen_architecture(2,additive_effects=qtl_effects_Trait2,
+                                         dominance_effects=dom_qtl_effects_Trait2,interaction_effects = interactions_trait2,
+                                         append=T,genetic_architecture) # Append Trait 2
+
+qtl_effects_Trait3 = as.matrix(rep(0,length(genetic_architecture$Primary_QTL)))
+genetic_architecture &lt;- gen_architecture(3,additive_effects=qtl_effects_Trait3,append=T,
+                                             gen_architecture=genetic_architecture) # Append Trait 3</code></pre>
+<hr />
+</div>
+</div>
+<div id="calculate-true-genetic-values-for-component-traits" class="section level3">
+<h3>Calculate True Genetic Values for Component Traits</h3>
+<p>Finally, to estimate genetic values we need to set the relationship between our component traits (Traits 1 &amp; 2) with our endpoint trait (Trait 3). In this example, we are going to keep it simple and specify the following relationship:</p>
+<p><span class="math inline">\(Trait 3 = Trait 1 + Trait 2\)</span></p>
+<pre class="r"><code># Simulate Total Genotypic Values for the Reference Population of Genotypes ----
+
+# Trait 1 ----
+
+start_time = Sys.time()
+RPG_Trait_Data &lt;- calc_GV(RPG@id,genos,qtl_effects_Trait1,dominance_present=F,
+                          interactions_present=F,effects=TRUE,trait=1,append=F)
+stop_time = Sys.time()
+run_time = stop_time - start_time; print(run_time)
+
+# Trait 2 ----
+
+start_time = Sys.time()
+
+### externally supplied Genos - incompatibility with select()
+RPG_Trait_Data &lt;- calc_GV(RPG@id,genos,qtl_effects_Trait2,dominance_present=T,
+                          dom_qtl_effects_Trait2,interactions_present=T,
+                          interactions_trait2,effects=TRUE,
+                          population=RPG_Trait_Data,trait=2,
+                          append = TRUE)
+stop_time = Sys.time()
+run_time = stop_time - start_time; print(run_time)
+
+# Trait 3 ----
+
+start_time = Sys.time()
+
+### externally supplied Genos - incompatibility with select()
+RPG_Trait_Data &lt;- calc_GV_EPT(RPG_Trait_Data,1,2,3)
+stop_time = Sys.time()
+run_time = stop_time - start_time; print(run_time)</code></pre>
+<p>Looking at the code chunks, above, we can see that we’ve simulated:</p>
+<ul>
+<li>1000 individuals with genotypes</li>
+<li>10 Chromosomes</li>
+<li>1 causal locus (QTL) per Chromosome for our traits of interest.</li>
+<li>Sampled the genetic effects of 10 QTL across the genome.
+<ul>
+<li>additive</li>
+<li>dominance</li>
+<li>epistasis</li>
+</ul></li>
+</ul>
+<p>The individuals and their genotypes are stored in the <strong>RPG</strong> object. The data on all three traits for our refernce population of genotypes is stored in the <strong>RPG_Trait_Data</strong> object. The qtl id’s and effects are stored in the <strong>genetic_architecture</strong> object.</p>
+<hr />
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+<div id="stochastic-genetic-simulation" class="section level2">
+<h2>Stochastic Genetic Simulation</h2>
+<p>So far we have simulated a reference population of genotypes, genetic architecure and data on three traits. Now we able to simulate selection on a trait of interest, and track the correlated response on other traits.</p>
+<p>Key Parameters of the Breeding Simulation:</p>
+<ul>
+<li>1000 individuals per generation.</li>
+<li>Select 100 individuals as parents on true genetic value of Trait 1.</li>
+<li>Random crossing with 10 offspring per cross.</li>
+<li>Estimate allele substitution effects for the 10 QTL across all three traits.</li>
+<li>Estimate genetic mean and genetic variance for all three traits.</li>
+</ul>
+<p>The specific parameters of the breeding simulation can be altered in the <strong>Simulation_Parameters.R</strong> file. The breeding simulation was replicated 5 times with a single, common RPG and trait genetic architectures.</p>
+<pre class="r"><code>#Create Empty Lists &amp; DataFrame to store Simulation Output
+
+RPG_Trait &lt;- vector(mode = &quot;list&quot;, length = n_cycles)
+ASR_RPG &lt;- vector(mode = &quot;list&quot;, length = n_cycles)
+RPG_parents &lt;- vector(mode = &quot;list&quot;, length = n_cycles)
+
+trait_results = data.frame(cbind(rep=rep(NA,1),cycle = rep(NA,1),trait = rep(NA,1),GV_Mean=rep(NA,1),GV_Variance=rep(NA,1)))
+
+population_results &lt;- vector(mode = &quot;list&quot;, length = n_reps)
+
+RPG_Trait[[1]] &lt;- RPG_Trait_Data
+ASR_RPG[[1]]&lt;- RPG
+
+#Breeding Loop
+
+for (rep in (1:n_reps)){
+  population_results[[rep]] &lt;- genetic_architecture
+  
+  for(cycle in 1:n_cycles){
+    if(cycle&gt;1){
+    #Truncation Selection of Parents (outside AlphaSimR)
+    RPG_parents[[cycle-1]] &lt;- select_parents(trait_object = RPG_Trait[[cycle-1]],nInd = nIndSel,selection_criteria=selection,trait = trait)
+    
+    #Identify Selected Parents in AlphaSimR
+    ASR_RPG_parents &lt;- select_ASR(RPG_parents[[cycle-1]],ASR_RPG[[cycle-1]])
+    genos &lt;- pullQtlGeno(ASR_RPG_parents) 
+    
+    #Random Crossing of Parents
+    ASR_RPG[[cycle]] &lt;- randCross(ASR_RPG_parents,nCrosses,nProgeny) 
+    }
+    
+    genos = pullQtlGeno(ASR_RPG[[cycle]]) # Extract QTL genotypes
+    genos &lt;- genos %&gt;% as.tibble() #get genotypes into tidyverse format
+    
+    #Calculate per Allele Selection Coefficients &amp; Fitness
+    population_results[[rep]] &lt;- s_hat_function(genos) %&gt;%
+      select(-QTL) %&gt;% 
+      bind_cols(  population_results[[rep]],.) %&gt;%
+      nest(-c(Primary_QTL,contains(&quot;trait&quot;),contains(&quot;generation&quot;))) %&gt;% 
+      rename_with(.fn = ~paste0(&quot;generation&quot;, cycle), .cols = &quot;data&quot;)
+    
+    # Calculate Genetic Values for Trait 1
+    RPG_Trait[[cycle]] &lt;- calc_GV(ASR_RPG[[cycle]]@id,genos,non_epistatic_qtl_effects=qtl_effects_Trait1,
+                                  dominance_present=F,interactions_present=F,effects=TRUE,trait=1,append=F)
+    # Calculate Genetic Values for Trait 2
+    RPG_Trait[[cycle]] &lt;- calc_GV(RPG_Trait[[cycle]]$id,genos,qtl_effects_Trait2,dominance_present=T,
+                                dom_qtl_effects_Trait2,interactions_present=T,interactions_trait2,effects=TRUE,
+                                population=RPG_Trait[[cycle]],trait=2,append = TRUE)
+    # Calculate Genetic Values for Trait 3
+    RPG_Trait[[cycle]] &lt;- calc_GV_EPT(RPG_Trait[[cycle]],1,2,3)
+    
+    for (trait_number in 1:n_traits){
+      #Extract Trait Genetic Values and Sub-components
+      trait_values &lt;- map(RPG_Trait,function(x) transpose(simplify_all(x[[paste0(&quot;trait&quot;,trait_number)]])))
+      trait_values &lt;- map(trait_values,function(x) if(length(x)==5){
+        set_names(x,nm=c(&quot;additive_values&quot;,&quot;dominance_values&quot;,&quot;non_epistatic_values&quot;,&quot;epistatic_values&quot;,&quot;genotypic_values&quot;))})
+      
+      ### Calculate Trait Parameters
+      genotypic_values &lt;- trait_values[[cycle]]$genotypic_values
+      gv_mean &lt;- mean(genotypic_values)
+      gv_variance &lt;- var(genotypic_values)
+      cycle_trait_results &lt;- cbind(rep = rep ,cycle = cycle, trait = trait_number,GV_Mean = gv_mean,GV_Variance = gv_variance)
+      trait_results = rbind(trait_results,cycle_trait_results)
+      
+      ### Calculate Population Parameters
+      
+      # Set Genetic Values as Phenotype
+      geno &lt;- pullQtlGeno(ASR_RPG[[cycle]]) - 1 
+      genotypic_values &lt;- map(seq_along(trait_values),function(x) trait_values[[x]]$genotypic_values)
+      pheno &lt;- as.matrix(genotypic_values[[cycle]])
+      
+      # Calculate Allele Frequency Changes from 1st Cycle to Current Cycle of Selection
+      pop &lt;- ASR_RPG[1:cycle]
+      all_freq &lt;- map(pop,function(x) colMeans(pullQtlHaplo(x))) %&gt;% 
+        as.tibble(.name_repair = &quot;unique&quot;) %&gt;% t()
+      all_freq_change &lt;- sweep(all_freq,2,all_freq[1,]); all_freq_change &lt;- all_freq_change[cycle,]
+      
+      tmp_locus_estimates &lt;- population_results[[rep]] %&gt;% 
+        unnest(.,paste0(&quot;trait&quot;,trait_number
+        ))
+      
+      # Calculate Per Locus Response to Selection
+      tmp_locus_estimates &lt;- Rhat_func(geno = geno,pheno = pheno, all_freq_change = all_freq_change,spread = T,plot=T) %&gt;%
+        select(-QTL) %&gt;%
+        bind_cols(tmp_locus_estimates,.) %&gt;%
+        nest(-c(Primary_QTL,contains(&quot;trait&quot;),contains(&quot;generation&quot;),contains(&quot;effects&quot;),contains(&quot;info&quot;),contains(&quot;cycle&quot;))) %&gt;% #collapse new locus estimate columns into a list column
+        rename_with(.fn = ~paste0(&quot;cycle&quot;, cycle), .cols = &quot;data&quot;) #rename this list column after the current breeding cycle
+      #Reformat Data into original structure with updated results
+      traits = c(1:n_traits)
+      population_results[[rep]] &lt;- tmp_locus_estimates %&gt;% 
+        nest(-c(Primary_QTL,paste0(&quot;trait&quot;,c(traits[!traits%in%trait_number])),contains(&quot;generation&quot;))) %&gt;%
+        rename_with(.fn = ~paste0(&quot;trait&quot;, trait_number), .cols = &quot;data&quot;)
+    }
+  }
+}</code></pre>
+<p>The simulation output needs to be reformatted, processed and within and across replicate metrics needs to be calculated. I wont bore you with the details here, but the code can be found <a href="Process_Raw_Data.html">here</a>.</p>
+<hr />
+<div style="page-break-after: always;"></div>
+</div>
+<div id="plot-results" class="section level2">
+<h2>Plot Results</h2>
+<p>To recreate Figure 2 in the manuscript we need to load the processed data on:</p>
+<ol style="list-style-type: decimal">
+<li>Trajectories of the predicted and true genetic values for the 3 traits:</li>
+<li>Trajectories of allele frequencies of the 10, pleiotropic QTL:
+<ul>
+<li>Epistasis</li>
+<li>No Epistasis</li>
+</ul></li>
+<li>Trajectories of allele substitution effects of the 10, pleiotropic QTL for the 3 traits:
+<ul>
+<li>Epistasis</li>
+<li>No Epistais</li>
+</ul></li>
+</ol>
+<p>The first step is to load the processed data.</p>
+<pre class="r"><code>genetic_trend = readRDS(file=&quot;./output/Trait_Trajectory_Plot_Data.rds&quot;)
+allele_freq = readRDS(file=&quot;./output/QTL_Trajectory_Plot_Data.rds&quot;)
+ase = readRDS(file=&quot;./output/ASE_Trajectory_Plot_Data.rds&quot;)</code></pre>
+<div id="plot-trajectories-of-genetic-values" class="section level3">
+<h3>Plot Trajectories of Genetic Values</h3>
+<pre class="r"><code>genetic_trend$Trait &lt;- as.factor(genetic_trend$Trait)
+genetic_trend$Rep &lt;- as.factor(genetic_trend$Rep)
+genetic_trend$Selection &lt;- as.factor(genetic_trend$Selection)
+
+GV &lt;- ggplot(genetic_trend,aes(x=Cycle,y=Per_Rep_GMean, group = interaction(Rep,Trait,Selection),colour = Trait,lty = Selection)) +
+  geom_line(aes(x=Cycle,y=Per_Rep_GMean, colour = Trait,lty = Selection),
+             size=0.1,alpha = 0.3) + #Within Rep Genetic Trend
+  geom_line(aes(x=Cycle,y=Overall_Genetic_Mean, colour = Trait, lty = Selection),
+             size=1,alpha = 0.8) + #Across Rep Genetic Trend
+  guides(alpha = FALSE) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.background = element_blank(),
+    axis.line = element_line(colour = &quot;black&quot;),
+    axis.title = element_text(size = rel(1.5)),
+    axis.text = element_text(size = rel(1.25)),
+  ) +
+  scale_linetype_manual(values=c(&quot;dashed&quot;,&quot;solid&quot;)) +
+  scale_x_continuous(&quot;Cycle&quot;,breaks = seq(1,10,1),limits = c(0.8, 11)) +
+  scale_y_continuous(&quot;Genetic Value&quot;, breaks = seq(-10,50,10),limits = c(-10, 50)) +
+  ggtitle(paste0(&quot;Trait Trajectories&quot;)) + theme_Publication() + scale_color_viridis_d(begin=0,end=1)</code></pre>
+<p><img src="figure/NonStationaryEffects_Example.Rmd/Plot%20GV-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Figure 2a demonstrates the impact of non-stationary effects of alleles on the genetic trend over breeding cycles. Figure 2a plots the trends in predicted mean genetic value (dashed lines) versus the realised genetic value (solid lines) over 10 cycles of selection on true genetic value. The predictions were calculated as the cumulative sum of allele substitution effects of the 10 QTL controlling the traits. The allele substitution effects were estimated in the 1st selection cycle, for each trait separately, with an additive RRBLUP model. As the RRBLUP model was supplied with true genetic values, the difference between the predicted and true genetic trends are due to changes in the contributions of non-additive genetic effects to allele substitution effects over breeding cycles. The RRBLUP model was not updated over cycles of selection, so that changes the non-stationary effects of alleles could not be captured by the genetic correlations between traits.</p>
+</div>
+<div id="plot-trajectories-of-allele-frequencies" class="section level3">
+<h3>Plot Trajectories of Allele Frequencies</h3>
+<pre class="r"><code>allele_freq$Cycle &lt;- as.numeric(allele_freq$Cycle)
+allele_freq$QTL &lt;- as.factor(allele_freq$QTL)
+allele_freq$`QTL Effects` &lt;- as.factor(allele_freq$`QTL Effects`)
+allele_freq$Rep &lt;- as.factor(allele_freq$Rep)
+
+colorVec =  c(&quot;forestgreen&quot;,&quot;navyblue&quot;)
+
+AF &lt;- ggplot(allele_freq,aes(x=Cycle,y=p, group = interaction(Rep,QTL))) +
+  geom_line(aes(x=Cycle,y=p, colour=`QTL Effects`),
+             size=0.1,alpha = 0.1) +
+  geom_line(aes(x=Cycle,y=all_freq_plot_data$avg_all_freq, colour=`QTL Effects`),
+             size=1,alpha = 0.8) +
+  guides(alpha = FALSE) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.background = element_blank(),
+    axis.line = element_line(colour = &quot;black&quot;),
+    axis.title = element_text(size = rel(1.5)),
+    axis.text = element_text(size = rel(1.25)),
+  ) +
+  scale_x_continuous(&quot;Cycle&quot;,breaks = seq(1,10,1),limits = c(0.8, 10)) +
+  scale_y_continuous(&quot;Allele Frequency&quot;, breaks = seq(0,1,0.2),limits = c(0, 1)) +
+  ggtitle(&quot;QTL Trajectories&quot;) + theme_Publication() + scale_colour_manual(values = colorVec)</code></pre>
+<p><img src="figure/NonStationaryEffects_Example.Rmd/Plot%20AF-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Figure 2b demonstrates the impact of non-stationary effects of alleles on the change in QTL allele frequencies over breeding cycles. Figure 2b plots the trends in mean allele frequencies for QTL without epistatic effects (blue line) and those with epistatic effects (green line) over 10 cycles of selection on Trait 1. The shaded lines represent the individual replicate x QTL trajectories. Additive and dominance genetic effects results in fairly quick fixation of the QTL over cycles of selection. While, additive x aditive epistatic effects result in a slower increase in allele frequency, due to reranking of individual’s as the genetic background changes.</p>
+</div>
+<div id="plot-trajectories-of-allele-substitution-effects" class="section level3">
+<h3>Plot Trajectories of Allele Substitution Effects</h3>
+<p>Figure 2c demonstrates the non-stationary effects of alleles over breeding cycles, that underpin the trait trajectories in Figure 2a. Figure 2c plots the trends in mean allele substitution effects for QTL without epistatic effects (blue line) and those with epistatic effects (green line) over 10 cycles of selection on Trait 1. Allele substiuttion effects are presented for each of the three traits. The shaded lines represent the individual replicate x QTL trajectories.</p>
+<pre class="r"><code>ase$Cycle &lt;- as.numeric(as.character(ase$Cycle))
+ase$QTL &lt;- as.factor(ase$QTL)
+ase$`QTL Effects`&lt;- as.factor(ase$`QTL Effects`)
+ase$Rep &lt;- as.factor(ase$Rep)
+ase$Trait &lt;- as.factor(ase$Trait)
+
+colorVec =  c(&quot;forestgreen&quot;, &quot;navyblue&quot;)
+
+ASE &lt;- ggplot(ase,aes(x=Cycle,y=ASE, group = interaction(Rep,QTL))) +
+  geom_line(aes(x=Cycle,y=ASE,colour=`QTL Effects`),
+             size=0.1,alpha = 0.1) +
+  geom_line(aes(x=Cycle,y=Avg_ASE, colour=`QTL Effects`),
+             size=1,alpha = 0.8) +
+  guides(alpha = FALSE) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.background = element_blank(),
+    axis.line = element_line(colour = &quot;black&quot;),
+    axis.title = element_text(size = rel(1.5)),
+    axis.text = element_text(size = rel(1.25)),
+  ) +
+  scale_x_continuous(&quot;Cycle&quot;,limits = c(0.8, 10), breaks = c(seq(1,10,1))) +
+  scale_y_continuous(&quot;Allele Substitution Effect&quot;, breaks = seq(-3,3,1),limits = c(-3,3)) +
+  ggtitle(&quot;Non-Stationary Effects of Alleles&quot;) + theme_Publication() + scale_colour_manual(values = colorVec) +
+  facet_wrap(.~ Trait)</code></pre>
+<p><img src="figure/NonStationaryEffects_Example.Rmd/ASE-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>A simple trend is observed for the allele substitution effects for Trait 1, with an entirely additive genetic architecture. QTL without epistatic effects (on Trait 2) remain constant until fixation. QTL with epistatic effects (on Trait 2) remain constant until the fixation of QTL without epistatic effects and show no sign change in effect estimates .</p>
+<p>A more complex trend is observed for the allele substitution effects for Trait 2, with non-additive genetic architecture. Both QTL with and without epistatic effects show changes in allele substiution effects over cycles of selection. There is a large sign change from approximately <span class="math inline">\(+1\)</span> to <span class="math inline">\(-2\)</span> as the genetic background is changed. This could cause large changes in the ranking of individuals for selection.</p>
+<p>Trait 3 is not directly controlled by QTL effects, as it is the sum of Trait 1 and Trait 2 phenotypes. However, the indirect effects of QTL mediated through Trait 1 and Trait 2 can be captured in genomic prediction. In this simple simulation using true genetic values, Trait 3 allele substitution effects were the sum of Trait 1 and Trait 2 allele substitution effects. Therefore, allele substitution effects for Trait 3 showed a large sign change from approximately <span class="math inline">\(+2\)</span> to <span class="math inline">\(-1\)</span> as the genetic background was changed by selection.</p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.0.2 (2020-06-22)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 19041)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_Australia.1252  LC_CTYPE=English_Australia.1252   
+[3] LC_MONETARY=English_Australia.1252 LC_NUMERIC=C                      
+[5] LC_TIME=English_Australia.1252    
+
+attached base packages:
+[1] grid      stats     graphics  grDevices utils     datasets  methods  
+[8] base     
+
+other attached packages:
+ [1] ggthemes_4.2.0    naniar_0.6.0      patchwork_1.1.1   latex2exp_0.4.0  
+ [5] rrBLUP_4.6.1      Ghat_0.1.0        data.table_1.13.2 gridExtra_2.3    
+ [9] corrplot_0.84     broom_0.7.2       ggraph_2.0.3      ggridges_0.5.2   
+[13] ggpubr_0.4.0      tidygraph_1.2.0   forcats_0.5.0     stringr_1.4.0    
+[17] dplyr_1.0.2       purrr_0.3.4       readr_1.4.0       tidyr_1.1.2      
+[21] tibble_3.0.4      ggplot2_3.3.2     tidyverse_1.3.0   AlphaSimR_0.13.0 
+[25] R6_2.4.1          hapsim_0.31       MASS_7.3-51.6     workflowr_1.6.2  
+
+loaded via a namespace (and not attached):
+ [1] colorspace_1.4-1   ggsignif_0.6.0     ellipsis_0.3.1     rio_0.5.16        
+ [5] visdat_0.5.3       rprojroot_1.3-2    fs_1.5.0           rstudioapi_0.11   
+ [9] farver_2.0.3       graphlayouts_0.7.1 ggrepel_0.8.2      fansi_0.4.1       
+[13] lubridate_1.7.9    xml2_1.3.2         knitr_1.30         polyclip_1.10-0   
+[17] jsonlite_1.7.1     dbplyr_1.4.4       ggforce_0.3.2      compiler_4.0.2    
+[21] httr_1.4.2         backports_1.1.10   assertthat_0.2.1   cli_2.1.0         
+[25] later_1.1.0.1      tweenr_1.0.1       htmltools_0.5.0    tools_4.0.2       
+[29] igraph_1.2.6       gtable_0.3.0       glue_1.4.2         reshape2_1.4.4    
+[33] Rcpp_1.0.5         carData_3.0-4      cellranger_1.1.0   vctrs_0.3.4       
+[37] xfun_0.18          ps_1.4.0           openxlsx_4.2.2     rvest_0.3.6       
+[41] lifecycle_0.2.0    rstatix_0.6.0      scales_1.1.1       hms_0.5.3         
+[45] promises_1.1.1     parallel_4.0.2     RColorBrewer_1.1-2 yaml_2.2.1        
+[49] curl_4.3           stringi_1.5.3      zip_2.1.1          rlang_0.4.8       
+[53] pkgconfig_2.0.3    evaluate_0.14      labeling_0.4.2     tidyselect_1.1.0  
+[57] plyr_1.8.6         magrittr_1.5       generics_0.0.2     DBI_1.1.0         
+[61] pillar_1.4.6       haven_2.3.1        whisker_0.4        foreign_0.8-80    
+[65] withr_2.3.0        abind_1.4-5        modelr_0.1.8       crayon_1.3.4      
+[69] car_3.0-10         utf8_1.1.4         rmarkdown_2.5      viridis_0.5.1     
+[73] readxl_1.3.1       blob_1.2.1         git2r_0.27.1       reprex_0.3.0      
+[77] digest_0.6.27      httpuv_1.5.4       munsell_0.5.0      viridisLite_0.3.0 </code></pre>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

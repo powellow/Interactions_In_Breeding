@@ -8,4 +8,15 @@ editor_options:
   chunk_output_type: console
 ---
 
-Welcome to my research website.
+Welcome to my website, exploring the impact of interactions on complex traits in breeding programs.  
+  
+We use simulation to bridge the gap in scales between fundamental biological networks and breeding germplasm, in order to explore the impacts of both gene-gene, gene-trait and trait-trait interactions on complex traits.
+
+I hope this resource provides some additional details on my work, and possibly some new knowledge along the way.
+
+Resources:
+
+  + Click [here](NonStationaryEffects_Example.html) to see a demonstration of non-stationary effects of alleles over breeding cycles.
+
+
+

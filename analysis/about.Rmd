@@ -7,4 +7,13 @@ editor_options:
   chunk_output_type: console
 ---
 
-Describe your project.
+I'm a [PostDoc](https://qaafi.uq.edu.au/profile/7515/owen-powell) at the Queensland Alliance for Agriculture & Innovation (QAAFI) based at UQ in Brisbane, Australia. I work in the Department for Crop Science, under the supervision of [Professor Mark Cooper](https://qaafi.uq.edu.au/profile/4060/mark-cooper).
+
+My project involves combining analyses of existing genotypic and
+phenotypic data sets and advanced genetic and crop simulation methods to investigate the
+potential to accelerate genetic gain for yield of sorghum in Australian environments through
+novel genomic selection methods that can account for the effects of genotype by environment
+interactions. This work is funded by the Grains Research & Development Corporation [(GRDC)](https://grdc.com.au/)
+
+I am also involved with a new [ARC Centre of Excellence for Plant Success in Nature & Agriculture](https://www.plantsuccess.org/) to deepen and extend knowledge of genetic networks that control key functional processes to understand how they have evolved and are integrated in the context of whole-plant performance and success in agriculture and nature.
+
